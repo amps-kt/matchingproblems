@@ -14,15 +14,15 @@ class Options_parser:
         parser = argparse.ArgumentParser(
             description='Solves matching problem instances.',
             formatter_class=RawTextHelpFormatter)
-        # filename
-        parser.add_argument(
-            '-f',
-            '-filename',
-            action='store',
-            dest='filename',
-            help=('input file name'),
-            required=True)
-        # filename
+        # # filename
+        # parser.add_argument(
+        #     '-f',
+        #     '-filename',
+        #     action='store',
+        #     dest='filename',
+        #     help=('input file name'),
+        #     required=True)
+        # number of agents
         parser.add_argument(
             '-na',
             '-numagents',
@@ -155,7 +155,7 @@ class Options_parser:
                 'lecturer occupancies and targets at the given optimisation ' +
                 'position'),
             type=int)
-        # load sum balanced
+        # brute force
         parser.add_argument(
             '-bf',
             '-bruteforce', 
@@ -294,7 +294,7 @@ class Options_parser:
         """Parses the user given command line arguments."""
         parser = self._create_arg_parser()
         args = parser.parse_args(arguments)
-        self.filename = args.filename
+        # self.filename = args.filename
         self.instance_options = self._get_instance_options(args)
         self.solver_options = self._get_solver_options(args)
         self.extra_constraints = self._get_extra_constraints(args)

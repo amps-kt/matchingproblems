@@ -1,3 +1,4 @@
+from .result import Result
 from .enums import *
 
 from pulp import *
@@ -346,6 +347,13 @@ class Model:
 
         return results
 
+    def get_results_object(self):
+        """Returns the assignments, profile, weight, and size of the matching as a dictionary.
+
+        Returns:
+          The assignments, profile, weight, and size of the matching as a dictionary.
+        """
+        return Result(self)
 
     def _get_pair_assignments(self):
         """Returns the matched Pairs of the matching.
@@ -398,6 +406,20 @@ class Model:
             matching[pair.student_index] = str(pair.projectID)
         return ' '.join(matching)
 
+    def _get_matching_list(self, pair_assignments):
+        """Returns a list containing the student-project assignments.
+
+        Args:
+          pair_assignments: List of student-project matched Pairs.
+
+        Returns:
+          The student-project assignments.
+        """
+
+        matching = ['0'] * self.num_students
+        for pair in pair_assignments:
+            matching[pair.student_index] = pair.projectID
+        return matching
 
     def _get_matching_size(self, pair_assignments):
         """Returns the size of the matching.
