@@ -1,3 +1,4 @@
+from src.server_data import ServerData
 from .enums import Instance_options
 from .model import Model, Pair
 
@@ -23,24 +24,10 @@ def _get_simple_pref_list_and_ranks(pref_list):
     in_tie = False
 
     for i in range(len(pref_list)):
-        if '(' in pref_list[i]:
-            elem_num = int(pref_list[i].replace('(', ''))
-            simp_pref_list.append(elem_num)
-            simp_ranks.append(rank)
-            in_tie = True
-
-        elif ')' in pref_list[i]:
-            elem_num = int(pref_list[i].replace(')', ''))
-            simp_pref_list.append(elem_num)
-            simp_ranks.append(rank)
-            rank+=1
-            in_tie = False
-
-        else:
-            simp_pref_list.append(int(pref_list[i]))
-            simp_ranks.append(rank)
-            if not in_tie:
-                rank+=1
+        simp_pref_list.append(int(pref_list[i]))
+        simp_ranks.append(rank)
+        if not in_tie:
+            rank += 1
 
     return simp_pref_list, simp_ranks
 
@@ -198,7 +185,38 @@ def _import_from_file(filename, instance_options):
     return model
 
 
-def import_model(filename, instance_options):
+def _import_from_obj(data: ServerData):
+    model = Model()
+    project_lecturers = []
+
+    model.num_students = len(data.students)
+    model.num_projects = len(data.projects)
+    model.num_lecturers = len(data.lecturers)
+
+    # student preference lists
+    for idx, preferences in enumerate(data.students):
+        pairs_row = _create_pairs_row(model, preferences, idx+1)
+        model.pairs.append(pairs_row)
+
+    # projects information
+    for project_info in data.projects:
+        model.proj_lower_quotas.append(project_info[0])
+        model.proj_upper_quotas.append(project_info[1])
+        project_lecturers.append(project_info[2])
+
+    # lecturer information
+    for lecturer_info in data.lecturers:
+        model.lec_lower_quotas.append(lecturer_info[0])
+        model.lec_targets.append(lecturer_info[1])
+        model.lec_upper_quotas.append(lecturer_info[2])
+
+    model.proj_lecturers = project_lecturers
+    _set_lecturers(model, project_lecturers)
+
+    return model
+
+
+def import_model(data):
     """Returns a completely initialised model.
     
     Args:
@@ -208,7 +226,8 @@ def import_model(filename, instance_options):
     Returns:
       The model representation of the instance.
     """
-    model = _import_from_file(filename, instance_options)
+
+    model = _import_from_obj(data)
     model.set_project_lists()
     model.set_lecturer_lists()
     model.set_rank_lists()
