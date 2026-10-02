@@ -1,0 +1,3 @@
+(A) 2026-10-02 check changes against main; both interfaces must be maintained
+(A) 2026-10-02 Merge up to current version of package
+(B) 2026-10-02 Email David about how to get this merged
